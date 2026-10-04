@@ -86,3 +86,9 @@ The dataset is `questions_2026-10-03`. The script calls `POST /ask` once per row
 ```bash
 PYTHONPATH=src python -m unittest tests.test_agent -v
 ```
+
+## UI Mockups
+
+![BE OpenAPI Specs](assets/BE_api.png)
+![FE Streamlit App](assets/FE_agent.png)
+![Opik Traces](assets/opik_traces.png)
