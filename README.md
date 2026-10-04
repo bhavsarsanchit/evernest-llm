@@ -91,4 +91,4 @@ PYTHONPATH=src python -m unittest tests.test_agent -v
 
 ![BE OpenAPI Specs](assets/BE_api.png)
 ![FE Streamlit App](assets/FE_agent.png)
-![Opik Traces](assets/opik_traces.png)
+![Opik Traces](assets/Opik_traces.png)
