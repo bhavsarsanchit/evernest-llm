@@ -1,4 +1,3 @@
-"""Small page for trying the listing agent. The API does the work."""
 
 import os
 from pathlib import Path
@@ -11,9 +10,8 @@ load_dotenv(Path(__file__).resolve().parent / ".env")
 
 API = os.environ.get("APP_URL", "http://127.0.0.1:8000")
 
-st.set_page_config(page_title="Listing agent", layout="centered")
-st.title("Listing agent")
-st.caption("Questions go to the API. Model and sampling override agent.yaml for this call.")
+st.set_page_config(page_title="Evernest Listing agent", layout="centered")
+st.title("Evernest Listing agent")
 
 try:
     spec = requests.get(f"{API}/spec", timeout=3).json()
