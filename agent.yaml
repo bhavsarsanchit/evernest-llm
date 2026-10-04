@@ -1,0 +1,22 @@
+# Tune the listing agent here. The API reloads this file on every request.
+# A request may override model.name, temperature, max_tokens, and retrieval.top_k.
+# model.name is the id the provider expects. model.base_url is used when API_BASE_URL is empty.
+
+model:
+  name: openai/gpt-4.1-mini
+  base_url: https://openrouter.ai/api/v1
+  temperature: 0.1
+  max_tokens: 700
+
+retrieval:
+  top_k: 6
+
+prompt:
+  system: |
+    You answer questions about one real-estate listing for the agent who is asking.
+    Use only the sources in the user message.
+    Cite a document as its id and page, and cite CRM facts with the table and the row id.
+    When two sources disagree, state both and prefer a measurement or a signed document over the exposé and the CRM field.
+    If the sources do not contain the fact, say that you do not know. Do not fill the gap.
+    Do not give a binding legal opinion. State the facts and stop.
+    Never quote an identity document, an ID number, or a date of birth.

@@ -1,0 +1,129 @@
+openapi: 3.1.0
+info:
+  title: Evernest listing agent
+  version: 1.0.0
+  description: |
+    Ask a question about one listing as a named agent.
+    Defaults for the model, sampling, and prompt live in agent.yaml.
+    This request may override the model and the sampling parameters.
+servers:
+  - url: http://127.0.0.1:8000
+paths:
+  /health:
+    get:
+      operationId: health
+      responses:
+        "200":
+          description: The API is up.
+  /spec:
+    get:
+      operationId: getSpec
+      summary: Current agent.yaml values.
+      responses:
+        "200":
+          description: Model id, base URL, sampling, retrieval width, and system prompt.
+  /index:
+    post:
+      operationId: indexDocuments
+      summary: Rebuild the Chroma collection from the PDFs.
+      responses:
+        "200":
+          description: How many pages were embedded. Identity documents are skipped.
+  /ask:
+    post:
+      operationId: ask
+      summary: Answer a listing question.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AskRequest"
+            example:
+              agent_id: A-01
+              listing_id: L-1001
+              question: Wie groß ist die Wohnfläche?
+              model: openai/gpt-4.1-mini
+              temperature: 0.1
+              max_tokens: 700
+              top_k: 6
+      responses:
+        "200":
+          description: The answer, the retrieved pages, and the access decision.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AskResponse"
+components:
+  schemas:
+    AskRequest:
+      type: object
+      required: [agent_id, listing_id, question]
+      properties:
+        agent_id:
+          type: string
+          description: Who is asking. Access follows this id.
+        listing_id:
+          type: string
+        question:
+          type: string
+        model:
+          type: string
+          description: Overrides agent.yaml model.name for this call.
+        temperature:
+          type: number
+          minimum: 0
+          maximum: 2
+        max_tokens:
+          type: integer
+          minimum: 1
+          maximum: 4000
+        top_k:
+          type: integer
+          minimum: 1
+          maximum: 20
+          description: How many Chroma pages to retrieve.
+    AskResponse:
+      type: object
+      required: [answer, sources, access, model, temperature, max_tokens, top_k, refused, tokens]
+      properties:
+        answer:
+          type: string
+        sources:
+          type: array
+          items:
+            type: object
+            properties:
+              document_id:
+                type: string
+              page:
+                type: integer
+              listing_id:
+                type: string
+              sub_category:
+                type: string
+        access:
+          type: object
+          properties:
+            can_read_listing:
+              type: boolean
+            can_read_documents:
+              type: boolean
+            reason:
+              type: string
+            role:
+              type: string
+        model:
+          type: string
+        temperature:
+          type: number
+        max_tokens:
+          type: integer
+        top_k:
+          type: integer
+        refused:
+          type: boolean
+        tokens:
+          type: object
+          additionalProperties:
+            type: integer
